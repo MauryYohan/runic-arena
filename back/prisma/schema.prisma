@@ -1,0 +1,46 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Card {
+  id				Int			@id @default(autoincrement())
+  name				String		@db.VarChar(255)
+  image				String		@db.VarChar(255)
+  type				Type?		@relation(fields: [typeId], references: [id])
+  typeId			Int?
+  classe			Classe?		@relation(fields: [classeId], references: [id])
+  classeId			Int?
+  power				Int
+  mainSkill			Skill?		@relation("MainSkill", fields: [mainSkillId], references: [id])
+  mainSkillId		Int?
+  secondSkill		Skill?		@relation("SecondSkill", fields: [secondSkillId], references: [id])
+  secondSkillId		Int?
+  passiveSkill		Skill?		@relation("PassiveSkill", fields: [passiveSkillId], references: [id])
+  passiveSkillId	Int?
+}
+
+model Type {
+  id    			Int    		@id @default(autoincrement())
+  name  			String 		@db.VarChar(255)
+  cards 			Card[]
+}
+
+model Classe {
+  id    			Int    		@id @default(autoincrement())
+  name  			String 		@db.VarChar(255)
+  cards 			Card[]
+}
+
+model Skill {
+  id          		Int    		@id @default(autoincrement())
+  name        		String 		@db.VarChar(255)
+  description 		String 		@db.VarChar(255)
+  mainCards    		Card[] 		@relation("MainSkill")
+  secondCards  		Card[] 		@relation("SecondSkill")
+  passiveCards 		Card[] 		@relation("PassiveSkill")
+}
